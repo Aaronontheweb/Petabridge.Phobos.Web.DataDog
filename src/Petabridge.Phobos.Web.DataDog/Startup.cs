@@ -85,7 +85,7 @@ namespace Petabridge.Phobos.Web
                     })
                     .Report.ToStatsDUdp(opt =>
                     {
-                        opt.SocketSettings.Address = "localhost";
+                        opt.SocketSettings.Address = Environment.GetEnvironmentVariable("DD_AGENT_HOST");
                         opt.SocketSettings.Port = 8125;
                         opt.SocketSettings.MaxUdpDatagramSize = 1024 * 4;
                         opt.StatsDOptions.MetricNameFormatter = new DefaultDogStatsDMetricStringSerializer();
@@ -100,7 +100,7 @@ namespace Petabridge.Phobos.Web
             // Add DataDog Tracing
             services.AddSingleton<ITracer>(sp =>
             {
-                return OpenTracingTracerFactory.CreateTracer().WithScopeManager(new ActorScopeManager());
+                return OpenTracingTracerFactory.CreateTracer(isDebugEnabled:true).WithScopeManager(new ActorScopeManager());
             });
         }
 
